@@ -97,5 +97,18 @@ class SubmitLinksTest extends TestCase
     }
 
     /** @test */
-    function max_length_succeeds_when_under_max() {}
+    function max_length_succeeds_when_under_max() {
+        $url = 'http://';
+        $url .= str_repeat('a', 255 - strlen($url));
+
+        $data = [
+            'title' => str_repeat('a', 255),
+            'url' => $url,
+            'description' => str_repeat('a', 255),
+        ];
+
+        $this->post('/submit', $data);
+
+        $this->assertDatabaseHas('links', $data);
+    }
 }
