@@ -8,8 +8,28 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SubmitLinksTest extends TestCase
 {
-    /** @test */
-    function guest_can_submit_a_new_link() {}
+    use RefreshDatabase;
+
+    /** @test Saving a valid link */
+    function guest_can_submit_a_new_link() {
+        $response = $this->post('/submit', [
+            'title' => 'Example Title',
+            'url' => 'http://example.com',
+            'description' => 'Example description.',
+        ]);
+
+        $this->assertDatabaseHas('links', [
+            'title' => 'Example Title'
+        ]);
+
+        $response
+            ->assertStatus(302)
+            ->assertHeader('Location', url('/'));
+
+        $this
+            ->get('/')
+            ->assertSee('Example Title');
+    }
 
     /** @test */
     function link_is_not_created_if_validation_fails() {}
