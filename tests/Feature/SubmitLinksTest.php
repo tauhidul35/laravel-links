@@ -31,8 +31,12 @@ class SubmitLinksTest extends TestCase
             ->assertSee('Example Title');
     }
 
-    /** @test */
-    function link_is_not_created_if_validation_fails() {}
+    /** @test Testing Failed Validation */
+    function link_is_not_created_if_validation_fails() {
+        $response = $this->post('/submit');
+
+        $response->assertSessionHasErrors(['title', 'url', 'description']);
+    }
 
     /** @test */
     function link_is_not_created_with_an_invalid_url() {}
